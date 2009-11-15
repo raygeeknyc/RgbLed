@@ -53,4 +53,9 @@ int nextColorInRgbSequence(int color);
 ***/
 void delayCyclingRgbColors(rgb_t &led, int duration);
 
+/***
+ Test each color and our cycling functions
+***/
+void testRgbLed(rgb_t &led);
+
 #endif

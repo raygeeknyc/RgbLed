@@ -85,3 +85,24 @@ void delayCyclingRgbColors(rgb_t &led, int duration) {
   delay(duration - (cycleDuration * COUNT_COLOR));
   setRgbLedColor(led, savedColor);
 }
+
+/***
+ Test each color and our cycling functions
+***/
+void testRgbLed(rgb_t &led) {
+  setRgbLedColor(led, COLOR_RED);
+  delay(2000);
+  setRgbLedColor(led, COLOR_GREEN);
+  delay(2000);
+  setRgbLedColor(led, COLOR_BLUE);
+  delay(2000);
+  setRgbLedColor(led, COLOR_YELLOW);
+  delay(2000);
+  setRgbLedColor(led, COLOR_CYAN);
+  delay(2000);
+  setRgbLedColor(led, COLOR_MAGENTA);
+  delay(2000);
+  setRgbLedColor(led, COLOR_WHITE);
+  delay(2000);
+  delayCyclingRgbColors(led, 2000);
+}
