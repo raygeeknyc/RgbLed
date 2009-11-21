@@ -1,7 +1,10 @@
-// Data structures, constants and functions for working with 3 color 4 pin
+// Class, Data structures, constants and functions for working with 3 color 4 pin
 // LEDs
 // 2009
 // @author("Raymond Blum" <raymond@insanegiantrobots.com>)
+//
+// Provides both Object Oriented and non-OO interfaces to RGB LEDs
+//
 
 #ifndef RgbLed_h
 #define RgbLed_h
@@ -29,7 +32,7 @@ typedef struct _rgb_t {
 /***
   Setup an RGB LED with the specified 3 pins
 ***/
-void initRgbLed(rgb_t &led, int red_pin, int green_pin, int blue_pin);
+void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin);
 
 /***
  Set the status LED to the specified color
@@ -53,9 +56,20 @@ int nextColorInRgbSequence(int color);
 ***/
 void delayCyclingRgbColors(rgb_t &led, int duration);
 
-/***
- Test each color and our cycling functions
-***/
-void testRgbLed(rgb_t &led);
 
+class RgbLed {
+private:
+  rgb_t data;
+
+public:
+  void delayCyclingColors(int);
+  /***
+   Test each color and our cycling functions
+  ***/
+  void test();
+  void setColor(int);
+  void cycleFromTo(int, int);
+
+  RgbLed(int, int, int);
+};
 #endif

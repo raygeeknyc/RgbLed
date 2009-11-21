@@ -1,5 +1,6 @@
 #include "RgbLed.h"
 
+#define TEST_COLOR_CHANGE_DELAY 2000
 /******************************************************************************
  * Wiring/Arduino Includes
  ******************************************************************************/
@@ -22,6 +23,10 @@ extern "C" {
 /***
  Set the status LED to the specified color
 ***/
+void RgbLed::setColor(int color) {
+  setRgbLedColor(data, color);
+}
+
 void setRgbLedColor(rgb_t &led, int color) {
   digitalWrite(led.redPin, !(color & COLOR_RED));
   digitalWrite(led.greenPin, !(color & COLOR_GREEN));
@@ -32,7 +37,7 @@ void setRgbLedColor(rgb_t &led, int color) {
 /***
   Setup an RGB LED with the specified 3 pins
 ***/
-void initRgbLed(rgb_t &led, int red_pin, int green_pin, int blue_pin) {
+void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin) {
  led.redPin = red_pin;
  led.greenPin = green_pin;
  led.bluePin = blue_pin;
@@ -44,6 +49,9 @@ void initRgbLed(rgb_t &led, int red_pin, int green_pin, int blue_pin) {
 /***
  Cycle from the startColor through the primaries and secondaries in color-wheel order, ending up on the target color
 ***/
+void RgbLed::cycleFromTo(int startColor, int targetColor) {
+  cycleRgbFromTo(data, startColor, targetColor);
+}
 void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor) {
   // Really stupid way to do this
   int color = startColor;
@@ -75,6 +83,10 @@ int nextColorInRgbSequence(int color) {
  Pause for the specified duration in milliseconds, cycle the specified RGB LED
  once through the set of colors, leaving it in the current color.
 ***/
+void RgbLed::delayCyclingColors(int duration) {
+  delayCyclingRgbColors(data, duration);
+}
+
 void delayCyclingRgbColors(rgb_t &led, int duration) {
   int savedColor = led.currentColor;
   int cycleDuration = duration / COUNT_COLOR;
@@ -89,20 +101,23 @@ void delayCyclingRgbColors(rgb_t &led, int duration) {
 /***
  Test each color and our cycling functions
 ***/
-void testRgbLed(rgb_t &led) {
-  setRgbLedColor(led, COLOR_RED);
-  delay(2000);
-  setRgbLedColor(led, COLOR_GREEN);
-  delay(2000);
-  setRgbLedColor(led, COLOR_BLUE);
-  delay(2000);
-  setRgbLedColor(led, COLOR_YELLOW);
-  delay(2000);
-  setRgbLedColor(led, COLOR_CYAN);
-  delay(2000);
-  setRgbLedColor(led, COLOR_MAGENTA);
-  delay(2000);
-  setRgbLedColor(led, COLOR_WHITE);
-  delay(2000);
-  delayCyclingRgbColors(led, 2000);
+void RgbLed::test() {
+  setRgbLedColor(data, COLOR_RED);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_GREEN);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_BLUE);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_YELLOW);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_CYAN);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_MAGENTA);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  setRgbLedColor(data, COLOR_WHITE);
+  delay(TEST_COLOR_CHANGE_DELAY);
+  delayCyclingRgbColors(data, TEST_COLOR_CHANGE_DELAY);
 }
+  RgbLed :: RgbLed(int red_pin, int green_pin, int blue_pin) {
+    initRgbLed_(data, red_pin, green_pin, blue_pin);
+  }
