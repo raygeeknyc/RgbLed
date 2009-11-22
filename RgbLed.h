@@ -9,6 +9,8 @@
 #ifndef RgbLed_h
 #define RgbLed_h
 
+#include <stdint.h>
+
 enum {
  COLOR_NONE = 0,
  COLOR_RED = 1,
@@ -23,6 +25,7 @@ enum {
 #define COUNT_COLOR 7
 
 typedef struct _rgb_t {
+  bool onState;
   int currentColor;
   int redPin;
   int greenPin;
@@ -30,9 +33,9 @@ typedef struct _rgb_t {
 } rgb_t;
 
 /***
-  Setup an RGB LED with the specified 3 pins
+  Setup an RGB LED with the specified 3 pins and the pin state (LOW or HIGH) for "on".
 ***/
-void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin);
+void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_state);
 
 /***
  Set the status LED to the specified color
@@ -57,11 +60,12 @@ int nextColorInRgbSequence(int color);
 void delayCyclingRgbColors(rgb_t &led, int duration);
 
 
-class RgbLed {
+class RgbLed_ {
 private:
+protected:
   rgb_t data;
-
 public:
+  void _init_(int, int, int);
   void delayCyclingColors(int);
   /***
    Test each color and our cycling functions
@@ -69,7 +73,29 @@ public:
   void test();
   void setColor(int);
   void cycleFromTo(int, int);
+};
 
-  RgbLed(int, int, int);
+/**
+  Class to represent a 4 pin RGB LED with 3 Cathodes and 1 common Anode.
+  These are typically wired through a resistor to each of 3 LED legs
+  with the 4th LED leg to VCC. 
+***/
+class RgbLedCommonAnode : public RgbLed_ {
+private:
+  inline bool getOnState() { return false; };
+public:
+  RgbLedCommonAnode(int, int, int);
+};
+
+/**
+  Class to represent a 4 pin RGB LED with 3 Anodes and 1 common Cathode.
+  These are typically wired through a resistor to each of 3 LED legs
+  with 4th LED leg to ground.
+***/
+class RgbLedCommonCathode : public RgbLed_ {
+private:
+  inline bool getOnState() { return true; };
+public:
+  RgbLedCommonCathode(int, int, int);
 };
 #endif

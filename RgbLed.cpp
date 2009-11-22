@@ -1,6 +1,8 @@
 #include "RgbLed.h"
 
 #define TEST_COLOR_CHANGE_DELAY 2000
+#define RGB_CYCLE_STATE_DURATION 334
+
 /******************************************************************************
  * Wiring/Arduino Includes
  ******************************************************************************/
@@ -8,6 +10,7 @@ extern "C" {
   // AVR LibC Includes
   #include <inttypes.h>
   #include <stdlib.h>
+  #include "WConstants.h"
 
   // Wiring Core Includes
   #undef abs
@@ -18,29 +21,38 @@ extern "C" {
   //void digitalWrite(int, uint8_t);
 }
 
-#define RGB_CYCLE_STATE_DURATION 334
-
 /***
  Set the status LED to the specified color
 ***/
-void RgbLed::setColor(int color) {
+void RgbLed_::setColor(int color) {
   setRgbLedColor(data, color);
 }
 
+/**
+  Return the pin setting for setting this LED's pin on or off corresponding to
+  on_or_off.
+***/
+bool getRgbPinOn_(rgb_t &led, bool on_or_off) {
+  return on_or_off?led.onState:!led.onState;
+}
+
 void setRgbLedColor(rgb_t &led, int color) {
-  digitalWrite(led.redPin, !(color & COLOR_RED));
-  digitalWrite(led.greenPin, !(color & COLOR_GREEN));
-  digitalWrite(led.bluePin, !(color & COLOR_BLUE));
+  digitalWrite(led.redPin, getRgbPinOn_(led, color & COLOR_RED));
+  digitalWrite(led.greenPin, getRgbPinOn_(led, color & COLOR_GREEN));
+  digitalWrite(led.bluePin, getRgbPinOn_(led, color & COLOR_BLUE));
   led.currentColor = color;
 }
 
 /***
-  Setup an RGB LED with the specified 3 pins
+  Setup an RGB LED with the specified 3 pins and the on-state of high or low.
+  Common anode LEDs typically set an output pin to LOW whereas common cathode
+  LEDs set the output pin HIGH.
 ***/
-void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin) {
+void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_state) {
  led.redPin = red_pin;
  led.greenPin = green_pin;
  led.bluePin = blue_pin;
+ led.onState = on_state;
  pinMode(led.redPin, OUTPUT);     
  pinMode(led.greenPin, OUTPUT);     
  pinMode(led.bluePin, OUTPUT);
@@ -49,7 +61,7 @@ void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin) {
 /***
  Cycle from the startColor through the primaries and secondaries in color-wheel order, ending up on the target color
 ***/
-void RgbLed::cycleFromTo(int startColor, int targetColor) {
+void RgbLed_::cycleFromTo(int startColor, int targetColor) {
   cycleRgbFromTo(data, startColor, targetColor);
 }
 void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor) {
@@ -83,7 +95,7 @@ int nextColorInRgbSequence(int color) {
  Pause for the specified duration in milliseconds, cycle the specified RGB LED
  once through the set of colors, leaving it in the current color.
 ***/
-void RgbLed::delayCyclingColors(int duration) {
+void RgbLed_::delayCyclingColors(int duration) {
   delayCyclingRgbColors(data, duration);
 }
 
@@ -101,7 +113,7 @@ void delayCyclingRgbColors(rgb_t &led, int duration) {
 /***
  Test each color and our cycling functions
 ***/
-void RgbLed::test() {
+void RgbLed_::test() {
   setRgbLedColor(data, COLOR_RED);
   delay(TEST_COLOR_CHANGE_DELAY);
   setRgbLedColor(data, COLOR_GREEN);
@@ -118,6 +130,11 @@ void RgbLed::test() {
   delay(TEST_COLOR_CHANGE_DELAY);
   delayCyclingRgbColors(data, TEST_COLOR_CHANGE_DELAY);
 }
-  RgbLed :: RgbLed(int red_pin, int green_pin, int blue_pin) {
-    initRgbLed_(data, red_pin, green_pin, blue_pin);
-  }
+
+RgbLedCommonAnode::RgbLedCommonAnode(int red_pin, int green_pin, int blue_pin) {
+  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState());
+}
+
+RgbLedCommonCathode::RgbLedCommonCathode(int red_pin, int green_pin, int blue_pin) {
+  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState());
+}
