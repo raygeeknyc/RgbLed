@@ -37,9 +37,9 @@ bool getRgbPinOn_(rgb_t &led, bool on_or_off) {
 }
 
 void setRgbLedColor(rgb_t &led, int color) {
-  digitalWrite(led.redPin, getRgbPinOn_(led, color & COLOR_RED));
-  digitalWrite(led.greenPin, getRgbPinOn_(led, color & COLOR_GREEN));
-  digitalWrite(led.bluePin, getRgbPinOn_(led, color & COLOR_BLUE));
+  digitalWrite(led.redPin, getRgbPinOn_(led, color & Color::RED));
+  digitalWrite(led.greenPin, getRgbPinOn_(led, color & Color::GREEN));
+  digitalWrite(led.bluePin, getRgbPinOn_(led, color & Color::BLUE));
   led.currentColor = color;
 }
 
@@ -72,7 +72,7 @@ void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor) {
     delay(RGB_CYCLE_STATE_DURATION);
     color = nextColorInRgbSequence(color);
     // inject White into the sequence next to YELLOW
-    if (targetColor == COLOR_WHITE && color == COLOR_YELLOW) color = COLOR_WHITE;
+    if (targetColor == Color::WHITE && color == Color::YELLOW) color = Color::WHITE;
     setRgbLedColor(led, color);
   } 
   while (color != targetColor);
@@ -82,13 +82,13 @@ void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor) {
  Return the next color in the wheel R-M-B-C-G|W-Y
 ***/
 int nextColorInRgbSequence(int color) {
-  if (color == COLOR_RED) return COLOR_MAGENTA;
-  if (color == COLOR_MAGENTA) return COLOR_BLUE;
-  if (color == COLOR_BLUE) return COLOR_CYAN;
-  if (color == COLOR_CYAN) return COLOR_GREEN;
-  if (color == COLOR_GREEN) return COLOR_YELLOW;
-  if (color == COLOR_YELLOW) return COLOR_RED;
-  if (color == COLOR_WHITE) return COLOR_YELLOW;
+  if (color == Color::RED) return Color::MAGENTA;
+  if (color == Color::MAGENTA) return Color::BLUE;
+  if (color == Color::BLUE) return Color::CYAN;
+  if (color == Color::CYAN) return Color::GREEN;
+  if (color == Color::GREEN) return Color::YELLOW;
+  if (color == Color::YELLOW) return Color::RED;
+  if (color == Color::WHITE) return Color::YELLOW;
 }
 
 /***
@@ -101,12 +101,12 @@ void RgbLed_::delayCyclingColors(int duration) {
 
 void delayCyclingRgbColors(rgb_t &led, int duration) {
   int savedColor = led.currentColor;
-  int cycleDuration = duration / COUNT_COLOR;
-  for (int i=0; i<COUNT_COLOR; i++) {
+  int cycleDuration = duration / Color::COUNT;
+  for (int i=0; i<Color::COUNT; i++) {
     setRgbLedColor(led, nextColorInRgbSequence(led.currentColor));
     delay(cycleDuration);
   }
-  delay(duration - (cycleDuration * COUNT_COLOR));
+  delay(duration - (cycleDuration * Color::COUNT));
   setRgbLedColor(led, savedColor);
 }
 
@@ -114,19 +114,19 @@ void delayCyclingRgbColors(rgb_t &led, int duration) {
  Test each color and our cycling functions
 ***/
 void RgbLed_::test() {
-  setRgbLedColor(data, COLOR_RED);
+  setRgbLedColor(data, Color::RED);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_GREEN);
+  setRgbLedColor(data, Color::GREEN);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_BLUE);
+  setRgbLedColor(data, Color::BLUE);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_YELLOW);
+  setRgbLedColor(data, Color::YELLOW);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_CYAN);
+  setRgbLedColor(data, Color::CYAN);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_MAGENTA);
+  setRgbLedColor(data, Color::MAGENTA);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, COLOR_WHITE);
+  setRgbLedColor(data, Color::WHITE);
   delay(TEST_COLOR_CHANGE_DELAY);
   delayCyclingRgbColors(data, TEST_COLOR_CHANGE_DELAY);
 }

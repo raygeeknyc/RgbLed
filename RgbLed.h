@@ -11,19 +11,6 @@
 
 #include <stdint.h>
 
-enum {
- COLOR_NONE = 0,
- COLOR_RED = 1,
- COLOR_GREEN = 2,
- COLOR_BLUE = 4,
- COLOR_YELLOW = (COLOR_GREEN + COLOR_RED),
- COLOR_CYAN = (COLOR_GREEN + COLOR_BLUE),
- COLOR_MAGENTA = (COLOR_RED + COLOR_BLUE),
- COLOR_WHITE = (COLOR_RED + COLOR_GREEN + COLOR_BLUE)
-};
-
-#define COUNT_COLOR 7
-
 typedef struct _rgb_t {
   bool onState;
   int currentColor;
@@ -59,6 +46,25 @@ int nextColorInRgbSequence(int color);
 ***/
 void delayCyclingRgbColors(rgb_t &led, int duration);
 
+/**
+  Class to hold our Color constants for primary and secondary colors.
+  Declare a private constructor to prevent instantiation.
+***/
+class Color {
+private:
+ inline Color() {};
+public:
+ static const int NONE = 0;
+ static const int RED = 1;
+ static const int GREEN = 2;
+ static const int BLUE = 4;
+ static const int YELLOW = (GREEN + RED);
+ static const int CYAN = (GREEN + BLUE);
+ static const int MAGENTA = (RED + BLUE);
+ static const int WHITE = (RED + GREEN + BLUE);
+
+ static const int COUNT = 7;
+};
 
 class RgbLed_ {
 private:
