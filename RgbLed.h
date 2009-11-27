@@ -66,19 +66,22 @@ public:
  static const int COUNT = 7;
 };
 
+/**
+  Abstract class to represent a 4 pin RGB LED. These LEDs come in two varieties, common anode and common cathode, thus
+  only the two subclasses can be instantiated.
+**/
 class RgbLed_ {
 private:
 protected:
   rgb_t data;
 public:
-  void _init_(int, int, int);
   void delayCyclingColors(int);
   /***
    Test each color and our cycling functions
   ***/
   void test();
-  void setColor(int);
-  void cycleFromTo(int, int);
+  void setColor(int color);
+  void cycleFromTo(int start_color, int target_color);
 };
 
 /**
@@ -90,7 +93,7 @@ class RgbLedCommonAnode : public RgbLed_ {
 private:
   inline bool getOnState() { return false; };
 public:
-  RgbLedCommonAnode(int, int, int);
+  RgbLedCommonAnode(int red_pin, int green_pin, int blue_pin);
 };
 
 /**
@@ -102,6 +105,6 @@ class RgbLedCommonCathode : public RgbLed_ {
 private:
   inline bool getOnState() { return true; };
 public:
-  RgbLedCommonCathode(int, int, int);
+  RgbLedCommonCathode(int red_pin, int green_pin, int blue_pin);
 };
 #endif

@@ -64,18 +64,18 @@ void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_s
 void RgbLed_::cycleFromTo(int startColor, int targetColor) {
   cycleRgbFromTo(data, startColor, targetColor);
 }
-void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor) {
+void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
   // Really stupid way to do this
-  int color = startColor;
+  int color = start_color;
   setRgbLedColor(led, color);
   do {
     delay(RGB_CYCLE_STATE_DURATION);
     color = nextColorInRgbSequence(color);
     // inject White into the sequence next to YELLOW
-    if (targetColor == Color::WHITE && color == Color::YELLOW) color = Color::WHITE;
+    if (target_color == Color::WHITE && color == Color::YELLOW) color = Color::WHITE;
     setRgbLedColor(led, color);
   } 
-  while (color != targetColor);
+  while (color != target_color);
 }
 
 /***
