@@ -1,10 +1,20 @@
-// Class, Data structures, constants and functions for working with 3 color 4 pin
-// LEDs
-// 2009
-// @author("Raymond Blum" <raymond@insanegiantrobots.com>)
-//
-// Provides both Object Oriented and non-OO interfaces to RGB LEDs
-//
+/**
+ * This library provides both Object Oriented and non-OO interfaces to RGB LEDs
+ * These are available in two types, common Anode and Common Cathode. We
+ * provide a support for each of these with identical operations.
+ *
+ * This library, demo sketch and docs are available at:
+ * http://www.insanegiantrobots.com/arduino/rgbled.zip
+ * @author("Raymond Blum" <raymond@insanegiantrobots.com>)
+ *
+ * Copyright (c) 2010 by Raymond Blum
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * See file LICENSE.txt for further informations on licensing terms.
+ */
 
 #ifndef RgbLed_h
 #define RgbLed_h
@@ -67,8 +77,9 @@ public:
 };
 
 /**
-  Abstract class to represent a 4 pin RGB LED. These LEDs come in two varieties, common anode and common cathode, thus
-  only the two subclasses can be instantiated.
+ Abstract class to represent a 4 pin RGB LED. These LEDs come in two varieties,
+ common anode and common cathode, thus only the two subclasses can be
+ instantiated.
 **/
 class RgbLed_ {
 private:
@@ -76,9 +87,9 @@ protected:
   rgb_t data;
 public:
   void delayCyclingColors(int);
-  /***
+  /**
    Test each color and our cycling functions
-  ***/
+  **/
   void test();
   void setColor(int color);
   void cycleFromTo(int start_color, int target_color);
@@ -88,7 +99,7 @@ public:
   Class to represent a 4 pin RGB LED with 3 Cathodes and 1 common Anode.
   These are typically wired through a resistor to each of 3 LED legs
   with the 4th LED leg to VCC. 
-***/
+**/
 class RgbLedCommonAnode : public RgbLed_ {
 private:
   inline bool getOnState() { return false; };
@@ -100,7 +111,7 @@ public:
   Class to represent a 4 pin RGB LED with 3 Anodes and 1 common Cathode.
   These are typically wired through a resistor to each of 3 LED legs
   with 4th LED leg to ground.
-***/
+**/
 class RgbLedCommonCathode : public RgbLed_ {
 private:
   inline bool getOnState() { return true; };
