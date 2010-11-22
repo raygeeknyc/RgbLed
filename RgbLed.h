@@ -21,20 +21,10 @@
 
 #include <stdint.h>
 
-typedef struct _drgb_t {
+typedef struct _rgb_t {
+  bool hasPwm;
   bool onState;
   int currentColor;
-  int redPin;
-  int greenPin;
-  int bluePin;
-} rgb_t;
-
-
-typedef struct _argb_t {
-  bool onState;
-  int currentRed;
-  int currentGreen;
-  int currentBlue;
   int redPin;
   int greenPin;
   int bluePin;
@@ -46,14 +36,14 @@ typedef struct _argb_t {
 void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_state);
 
 /***
+ Set the 3 pins of the LED to the specified RGB values if the LED has PWM enabled, else set it to White.
+***/
+void setRgbLedColor(rgb_t &led, unsigned int R, unsigned int G, unsigned int B);
+
+/***
  Set the status LED to the specified color
 ***/
 void setRgbLedColor(rgb_t &led, int color);
-
-/***
- Set the analog status LED to the specified RGB value
-***/
-void setRgbLedColor(rgb_t &led, int red, int green, int blue);
 
 /***
  Cycle from the startColor through the primaries and secondaries
@@ -93,14 +83,14 @@ public:
 };
 
 /**
- Abstract class to represent a 4 pin RGB LED on digital pins. These LEDs come in two varieties,
+ Abstract class to represent a 4 pin RGB LED. These LEDs come in two varieties,
  common anode and common cathode, thus only the two subclasses can be
  instantiated.
 **/
-class DRgbLed_ {
+class RgbLed_ {
 private:
 protected:
-  drgb_t data;
+  rgb_t data;
 public:
   void delayCyclingColors(int);
   /**
@@ -108,65 +98,31 @@ public:
   **/
   void test();
   void setColor(int color);
+  void setColor(unsigned int R, unsigned int G, unsigned int B);
   void cycleFromTo(int start_color, int target_color);
 };
 
 /**
- Abstract class to represent a 4 pin RGB LED on analog pins.
-**/
-class ARgbLed_ {
-private:
-protected:
-  argb_t data;
-public:
-  void setColor(int red, int green, int blue);
-};
-
-/**
-  Class to represent a 4 pin RGB LED with 3 Cathodes and 1 common Anode on digital pins.
+  Class to represent a 4 pin RGB LED with 3 Cathodes and 1 common Anode.
   These are typically wired through a resistor to each of 3 LED legs
   with the 4th LED leg to VCC. 
 **/
-class DRgbLedCommonAnode : public DRgbLed_ {
+class RgbLedCommonAnode : public RgbLed_ {
 private:
   inline bool getOnState() { return false; };
 public:
-  DRgbLedCommonAnode(int red_pin, int green_pin, int blue_pin);
+  RgbLedCommonAnode(int red_pin, int green_pin, int blue_pin, bool has_pwm=false);
 };
 
 /**
-  Class to represent a 4 pin RGB LED with 3 Anodes and 1 common Cathode on digital pins.
+  Class to represent a 4 pin RGB LED with 3 Anodes and 1 common Cathode.
   These are typically wired through a resistor to each of 3 LED legs
   with 4th LED leg to ground.
 **/
-class DRgbLedCommonCathode : public DRgbLed_ {
+class RgbLedCommonCathode : public RgbLed_ {
 private:
   inline bool getOnState() { return true; };
 public:
-  DRgbLedCommonCathode(int red_pin, int green_pin, int blue_pin);
-};
-
-/**
-  Class to represent a 4 pin RGB LED with 3 Cathodes and 1 common Anode on analog pins.
-  These are typically wired through a resistor to each of 3 LED legs
-  with the 4th LED leg to VCC. 
-**/
-class ARgbLedCommonAnode : public ARgbLed_ {
-private:
-  inline bool getOnState() { return false; };
-public:
-  DRgbLedCommonAnode(int red_pin, int green_pin, int blue_pin);
-};
-
-/**
-  Class to represent a 4 pin RGB LED with 3 Anodes and 1 common Cathode on analog pins.
-  These are typically wired through a resistor to each of 3 LED legs
-  with 4th LED leg to ground.
-**/
-class ARgbLedCommonCathode : public ARgbLed_ {
-private:
-  inline bool getOnState() { return true; };
-public:
-  ARgbLedCommonCathode(int red_pin, int green_pin, int blue_pin);
+  RgbLedCommonCathode(int red_pin, int green_pin, int blue_pin, bool has_pwm=false);
 };
 #endif

@@ -48,6 +48,13 @@ void RgbLed_::setColor(int color) {
 }
 
 /**
+ Set the status LED to the specified RGB values if the LED has PWM enabled.
+**/
+void RgbLed_::setColor(unsigned int R, unsigned int G, unsigned int B) {
+  setRgbLedColor(data, R, G, B);
+}
+
+/**
   Return the pin setting for setting this LED's pin on or off corresponding to
   on_or_off.
 **/
@@ -66,15 +73,31 @@ void setRgbLedColor(rgb_t &led, int color) {
 }
 
 /**
+  Set the 3 pins of the LED to the specified RGB values if the LED has PWM enabled.
+**/
+void setRgbLedColor(rgb_t &led, unsigned int R, unsigned int G, unsigned int B) {
+  if (led.hasPwm) {
+    bool isCommonAnode = led.onState;
+    analogWrite(led.redPin, (led.onState)?R:(255-R));
+    analogWrite(led.greenPin, (led.onState)?G:(255-G));
+    analogWrite(led.bluePin, (led.onState)?B:(255-B));
+  } else {
+    setRgbLedColor(led, Color::WHITE);
+  }
+}
+
+/**
   Setup an RGB LED with the specified 3 pins and the on-state of high or low.
+  If the LED has PWM available on all of its pins then we can use color mixing.
   Common anode LEDs typically set an output pin to LOW whereas common cathode
   LEDs set the output pin HIGH.
 **/
-void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_state) {
+void initRgbLed_(rgb_t &led, int red_pin, int green_pin, int blue_pin, bool on_state, bool has_pwm) {
  led.redPin = red_pin;
  led.greenPin = green_pin;
  led.bluePin = blue_pin;
  led.onState = on_state;
+ led.hasPwm = has_pwm;
  pinMode(led.redPin, OUTPUT);     
  pinMode(led.greenPin, OUTPUT);     
  pinMode(led.bluePin, OUTPUT);
@@ -87,21 +110,31 @@ void RgbLed_::cycleFromTo(int startColor, int targetColor) {
   cycleRgbFromTo(data, startColor, targetColor);
 }
 void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
-  // Really stupid way to do this
   int color = start_color;
   setRgbLedColor(led, color);
+  // This is not elegant, but special case support for WHITE
+  // as a start color.
+  if (color = Color::WHITE) {
+    delay(RGB_CYCLE_STATE_DURATION);
+    color = Color::YELLOW;
+    setRgbLedColor(led, color);
+  }
   do {
     delay(RGB_CYCLE_STATE_DURATION);
     color = nextColorInRgbSequence(color);
-    // inject White into the sequence next to YELLOW
-    if (target_color == Color::WHITE && color == Color::YELLOW) color = Color::WHITE;
     setRgbLedColor(led, color);
-  } 
-  while (color != target_color);
+    // This is not elegant, but special case support for WHITE
+    // as an end color.
+    if (target_color == Color::WHITE && color == Color::YELLOW) {
+      setRgbLedColor(led, target_color);
+      delay(RGB_CYCLE_STATE_DURATION);
+      break;
+    }
+  } while (color != target_color);
 }
 
 /**
- Return the next color in the wheel R-M-B-C-G|W-Y
+ Return the next color in the wheel R-M-B-C-G-Y
 **/
 int nextColorInRgbSequence(int color) {
   switch (color)  {
@@ -117,10 +150,8 @@ int nextColorInRgbSequence(int color) {
       return Color::YELLOW;
     case Color::YELLOW:
       return Color::RED;
-    case Color::WHITE:
-      return Color::YELLOW;
     default:
-      return Color::WHITE;
+      return Color::RED;
   }
 }
 
@@ -164,10 +195,10 @@ void RgbLed_::test() {
   delayCyclingRgbColors(data, TEST_COLOR_CHANGE_DELAY);
 }
 
-RgbLedCommonAnode::RgbLedCommonAnode(int red_pin, int green_pin, int blue_pin) {
-  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState());
+RgbLedCommonAnode::RgbLedCommonAnode(int red_pin, int green_pin, int blue_pin, bool has_pwm) {
+  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState(), has_pwm);
 }
 
-RgbLedCommonCathode::RgbLedCommonCathode(int red_pin, int green_pin, int blue_pin) {
-  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState());
+RgbLedCommonCathode::RgbLedCommonCathode(int red_pin, int green_pin, int blue_pin, bool has_pwm) {
+  initRgbLed_(data, red_pin, green_pin, blue_pin, getOnState(), has_pwm);
 }
