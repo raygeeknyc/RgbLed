@@ -48,6 +48,13 @@ void RgbLed_::setColor(int color) {
 }
 
 /**
+ Get the most recently set color, undefined if using PWM codes
+**/
+int RgbLed_::getColor() {
+  return data.currentColor;
+}
+
+/**
  Set the status LED to the specified RGB values if the LED has PWM enabled.
 **/
 void RgbLed_::setColor(unsigned int R, unsigned int G, unsigned int B) {
@@ -131,6 +138,29 @@ void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
       break;
     }
   } while (color != target_color);
+}
+
+/**
+ Return the next color in the specified direction by color temp
+ R-M-Y-C-G-B-W with no wraparound.
+ 
+ Return the same color if a boundary is hit or an invalid color
+ is passed.
+**/
+int Color::nextColorByTemp(int color, int direction) {
+int colorWheel[] = {Color::RED, Color::MAGENTA, Color::YELLOW,
+  Color::CYAN, Color::GREEN, Color::BLUE, Color::WHITE};
+
+  if (color <= 0 || color >= COUNT) {
+    return color;
+  }
+  if (direction < 0) {
+    return colorWheel[color-1];
+  } else if (direction > 0) {
+    return colorWheel[color+1];
+  } else {
+    return color;
+  }
 }
 
 /**

@@ -70,6 +70,7 @@ class Color {
 private:
  inline Color() {};
 public:
+ static int nextColorByTemp(int color, int direction);
  static const int NONE = 0;
  static const int RED = 1;
  static const int GREEN = 2;
@@ -98,6 +99,7 @@ public:
   **/
   void test();
   void setColor(int color);
+  int getColor();
   void setColor(unsigned int R, unsigned int G, unsigned int B);
   void cycleFromTo(int start_color, int target_color);
 };
