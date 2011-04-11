@@ -150,14 +150,13 @@ void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
 int Color::nextColorByTemp(int color, int direction) {
 int colorWheel[] = {Color::RED, Color::MAGENTA, Color::YELLOW,
   Color::CYAN, Color::GREEN, Color::BLUE, Color::WHITE};
+  int i;
 
-  if (color <= 0 || color >= COUNT) {
-    return color;
-  }
+  for (i=0; i<COUNT && colorWheel[i]!=color;i++);
   if (direction < 0) {
-    return colorWheel[color-1];
+    return colorWheel[i-(i>0)?1:0];
   } else if (direction > 0) {
-    return colorWheel[color+1];
+    return colorWheel[i+(i<COUNT-1)?1:0];
   } else {
     return color;
   }
