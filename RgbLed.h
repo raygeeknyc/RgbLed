@@ -52,7 +52,7 @@ void setRgbLedColor(rgb_t &led, int color);
 void cycleRgbFromTo(rgb_t &led, int startColor, int targetColor);
 
 /***
- Return the next color in the wheel R-M-B-C-G|W-Y
+ Return the next color in the color-temperature sequence R-M-Y-G-C-B-W
 ***/
 int nextColorInRgbSequence(int color);
 

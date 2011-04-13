@@ -154,9 +154,9 @@ int colorWheel[] = {Color::RED, Color::MAGENTA, Color::YELLOW,
 
   for (i=0; i<COUNT && colorWheel[i]!=color;i++);
   if (direction < 0) {
-    return colorWheel[i-(i>0)?1:0];
+    return colorWheel[i-((i>0)?1:0)];
   } else if (direction > 0) {
-    return colorWheel[i+(i<COUNT-1)?1:0];
+    return colorWheel[i+((i<COUNT-1)?1:0)];
   } else {
     return color;
   }
