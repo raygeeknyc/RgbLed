@@ -25,19 +25,11 @@
 /******************************************************************************
  * Wiring/Arduino Includes
  ******************************************************************************/
+#include <Arduino.h>
 extern "C" {
   // AVR LibC Includes
   #include <inttypes.h>
   #include <stdlib.h>
-  #include "WConstants.h"
-
-  // Wiring Core Includes
-  #undef abs
-  #include "WConstants.h"
-
-  // Wiring Core Prototypes
-  //void pinMode(uint8_t, uint8_t);
-  //void digitalWrite(int, uint8_t);
 }
 
 /**
