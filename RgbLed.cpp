@@ -76,7 +76,6 @@ void setRgbLedColor(rgb_t &led, int color) {
 **/
 void setRgbLedColor(rgb_t &led, unsigned int R, unsigned int G, unsigned int B) {
   if (led.hasPwm) {
-    bool isCommonAnode = led.onState;
     analogWrite(led.redPin, (led.onState)?R:(255-R));
     analogWrite(led.greenPin, (led.onState)?G:(255-G));
     analogWrite(led.bluePin, (led.onState)?B:(255-B));
@@ -113,7 +112,7 @@ void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
   setRgbLedColor(led, color);
   // This is not elegant, but special case support for WHITE
   // as a start color.
-  if (color = Color::WHITE) {
+  if (color == Color::WHITE) {
     delay(RGB_CYCLE_STATE_DURATION);
     color = Color::YELLOW;
     setRgbLedColor(led, color);
