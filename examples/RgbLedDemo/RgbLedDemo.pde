@@ -26,7 +26,7 @@
 
 // Create objects of the appropriate types for the two connected LEDs
 // Last arg=true indicates that all of these pins are PWM enabled, omit for no PWM
-// If you don't specify this and then setPwm, the library sets the LED to WHITE
+// If you don't specify this and then setPwm, the library sets the LED to RGB_WHITE
 RgbLedCommonAnode led_rgb1(LED1_PIN_RED, LED1_PIN_GREEN, LED1_PIN_BLUE, true);
 RgbLedCommonCathode led_rgb2(LED2_PIN_RED, LED2_PIN_GREEN, LED2_PIN_BLUE, true);
 
@@ -54,7 +54,7 @@ void setup() {
   Serial.println("</YELLOW>");
 
   Serial.println("<CycleLED1Colors>");
-  led_rgb1.cycleFromTo(Color::WHITE, Color::WHITE);
+  led_rgb1.cycleFromTo(Color::RGB_WHITE, Color::RGB_WHITE);
   Serial.println("</CycleLED1Colors>");
   delay(DURATION_BLINK);
 
