@@ -78,7 +78,7 @@ public:
  static const int YELLOW = (GREEN + RED);
  static const int CYAN = (GREEN + BLUE);
  static const int MAGENTA = (RED + BLUE);
- static const int WHITE = (RED + GREEN + BLUE);
+ static const int RGB_WHITE = (RED + GREEN + BLUE);
 
  static const int COUNT = 7;
 };

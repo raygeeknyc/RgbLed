@@ -80,7 +80,7 @@ void setRgbLedColor(rgb_t &led, unsigned int R, unsigned int G, unsigned int B) 
     analogWrite(led.greenPin, (led.onState)?G:(255-G));
     analogWrite(led.bluePin, (led.onState)?B:(255-B));
   } else {
-    setRgbLedColor(led, Color::WHITE);
+    setRgbLedColor(led, Color::RGB_WHITE);
   }
 }
 
@@ -110,9 +110,9 @@ void RgbLed_::cycleFromTo(int startColor, int targetColor) {
 void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
   int color = start_color;
   setRgbLedColor(led, color);
-  // This is not elegant, but special case support for WHITE
+  // This is not elegant, but special case support for RGB_WHITE
   // as a start color.
-  if (color == Color::WHITE) {
+  if (color == Color::RGB_WHITE) {
     delay(RGB_CYCLE_STATE_DURATION);
     color = Color::YELLOW;
     setRgbLedColor(led, color);
@@ -121,9 +121,9 @@ void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
     delay(RGB_CYCLE_STATE_DURATION);
     color = nextColorInRgbSequence(color);
     setRgbLedColor(led, color);
-    // This is not elegant, but special case support for WHITE
+    // This is not elegant, but special case support for RGB_WHITE
     // as an end color.
-    if (target_color == Color::WHITE && color == Color::YELLOW) {
+    if (target_color == Color::RGB_WHITE && color == Color::YELLOW) {
       setRgbLedColor(led, target_color);
       delay(RGB_CYCLE_STATE_DURATION);
       break;
@@ -140,7 +140,7 @@ void cycleRgbFromTo(rgb_t &led, int start_color, int target_color) {
 **/
 int Color::nextColorByTemp(int color, int direction) {
 int colorWheel[] = {Color::RED, Color::MAGENTA, Color::YELLOW,
-  Color::CYAN, Color::GREEN, Color::BLUE, Color::WHITE};
+  Color::CYAN, Color::GREEN, Color::BLUE, Color::RGB_WHITE};
   int i;
 
   for (i=0; i<COUNT && colorWheel[i]!=color;i++);
@@ -210,7 +210,7 @@ void RgbLed_::test() {
   delay(TEST_COLOR_CHANGE_DELAY);
   setRgbLedColor(data, Color::MAGENTA);
   delay(TEST_COLOR_CHANGE_DELAY);
-  setRgbLedColor(data, Color::WHITE);
+  setRgbLedColor(data, Color::RGB_WHITE);
   delay(TEST_COLOR_CHANGE_DELAY);
   delayCyclingRgbColors(data, TEST_COLOR_CHANGE_DELAY);
 }
